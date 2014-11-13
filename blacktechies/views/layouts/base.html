@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  {% block head %}
+  <head>
+    <meta charset=utf-8>
+    <title>{% block title %}Welcome{% endblock %} | KyleWpppd.com</title>
+    <link rel="shortcut icon" type="image/png"
+          href="{{ url_for('static', filename='images/favicon.png') }}">
+    {% block head_styles %}
+    <link rel="stylesheet" type="text/css"
+          href="{{ url_for('static', filename='styles/vendor/bootstrap/3.3.1/bootstrap.min.css') }}">
+    {% endblock %}
+    {% block head_scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.1/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/lodash/2.4.1/lodash.compat.js') }}"></script>
+    {% endblock %}
+  </head>
+  {% endblock %}
+  {% block body %}
+  <body>
+    <header class="site-header">
+      <h1>Black Techies</h1>
+    </header>
+    <nav class="header-nav">
+      <ul>
+        <li><a href="/">Home</a></li>
+      </ul>
+    </nav>
+    <hr>
+    <div>
+      {% block main_content %}
+      {% endblock %}
+    </div>
+    <hr>
+    <footer>
+      {% block footer_content %}
+      {% endblock %}
+    </footer>
+  </body>
+  {% endblock %}
+</html>
