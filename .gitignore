@@ -1,0 +1,15 @@
+# Don't commit the configs!
+/kylewpppd_com_config.py
+
+# Mac OS X stuff
+.DS_Store
+
+# Emacs temp files
+.\#*
+
+# Compiled Python Artifacts
+*.pyc
+*.pyo
+
+# VirtualEnv folder
+/.virtualenv
