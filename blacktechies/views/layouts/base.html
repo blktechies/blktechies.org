@@ -1,8 +1,9 @@
 <!doctype html>
-<html>
+<html lang="en">
   {% block head %}
   <head>
-    <meta charset=utf-8>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Welcome{% endblock %} | KyleWpppd.com</title>
     <link rel="shortcut icon" type="image/png"
           href="{{ url_for('static', filename='images/favicon.png') }}">
@@ -13,29 +14,42 @@
     {% block head_scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.1/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/lodash/2.4.1/lodash.compat.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/blacktechies-nav.js') }}"></script>
     {% endblock %}
   </head>
   {% endblock %}
   {% block body %}
   <body>
-    <header class="site-header">
-      <h1>Black Techies</h1>
-    </header>
-    <nav class="header-nav">
-      <ul>
-        <li><a href="/">Home</a></li>
-      </ul>
+    <nav class="navbar navbar-default navbar-static-top" style="border: 0;">
+      <div class="container">
+	<header class="site-header">
+          <h1>Black Techies</h1>
+	</header>
+
+      <div class="row">
+	<div class="col-sm-12">
+	  <nav class="header-nav">
+            <ul class="nav nav-tabs">
+              <li role="presentation"><a href="{{ url_for('main.index') }}">Home</a></li>
+	      <li role="presentation"><a href="{{ url_for('main.meetup') }}">Meetup</a></li>
+	      <li role="presentation"><a href="{{ url_for('jobs.index') }}">Jobs</a></li>
+            </ul>
+	  </nav>
+	</div>
+
+      </div>
     </nav>
-    <hr>
-    <div>
-      {% block main_content %}
-      {% endblock %}
+    <div class="container">
+      <div>
+        {% block main_content %}
+        {% endblock %}
+      </div>
+      <hr>
+      <footer>
+        {% block footer_content %}
+        {% endblock %}
+      </footer>
     </div>
-    <hr>
-    <footer>
-      {% block footer_content %}
-      {% endblock %}
-    </footer>
   </body>
   {% endblock %}
 </html>
