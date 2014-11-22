@@ -28,9 +28,8 @@ class User(db.Model):
     last_name = db.Column(db.String(127), nullable=False, default='')
     status = db.Column(db.Integer, nullable=False, default=STATUS_NEEDS_ACTIVATION)
     # Relationship columns
-    primary_email = db.relationship('UserEmail', primaryjoin="and_(UserEmail.is_primary==True)")
     email_addresses = db.relationship('UserEmail', backref='user')
-    roles = db.relationship('UserRole', secondary='user_roles', backref='user')
+    roles = db.relationship('Role', secondary='user_roles')
     open_ids = db.relationship('UserOpenID', backref='user')
 
     @staticmethod
@@ -94,7 +93,3 @@ class UserRole(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'))
     __table_args__ = (db.PrimaryKeyConstraint('user_id', 'role_id', name="pk_user_roles"),)
-
-
-
-

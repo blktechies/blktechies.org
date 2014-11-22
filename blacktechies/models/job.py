@@ -54,7 +54,7 @@ class JobPosting(db.Model):
     posted_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
     # relationship columns
     user = db.relationship('User')
-    history = db.relationship('JobPostingStatusChange', back_populates='job_postings')
+    status_changes = db.relationship('JobPostingStatusChange')
 
     def __repr__(self):
         summary = ''
@@ -122,7 +122,7 @@ class JobPostingStatusChange(db.Model):
     job_posting_id = db.Column(db.Integer, db.ForeignKey('job_postings.id'), index=True, nullable=False)
     status = db.Column(db.Integer, index=True, nullable=False)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user = db.relationship('User', back_populates='history')
+    user = db.relationship('User')
 
     def __repr__(self):
         return '<Job status change to: %s on %s by id:%d>' % (JobStatus(self.status), self.updated, self.user_id)
