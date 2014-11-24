@@ -1,6 +1,8 @@
+import email
 from datetime import datetime
 
 from blacktechies.database import db
+from blacktechies.models.user import User, UserEmail
 from blacktechies.utils import html_sanitizer
 
 # What a hack...
@@ -53,7 +55,7 @@ class JobPosting(db.Model):
     email_body = db.Column(db.Text)
     posted_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
     # relationship columns
-    user = db.relationship('User')
+    user = db.relationship('User', uselist=False)
     status_changes = db.relationship('JobPostingStatusChange')
 
     def __repr__(self):
@@ -69,14 +71,19 @@ class JobPostingEmailSubmission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
     email_id = db.Column(db.Integer, db.ForeignKey('user_emails.id'), nullable=False, index=True)
-    subject = db.Column(db.String(252), nullable=False)
+    subject = db.Column(db.String(252), nullable=True, index=True)
     email_body = db.Column(db.Text, nullable=False) # always unsafe to print to client
     status = db.Column(db.Integer, nullable=False, default=JobStatus.NEEDS_PARSE, index=True)
     html = db.Column(db.Text)
     plain_text = db.Column(db.Text)
+    created = db.Column(db.DateTime)
+    # relationship columns
+    from_user = db.relationship('User', uselist=False)
+    from_email = db.relationship('UserEmail', uselist=False)
 
-    def __init__(self, *args, **kwargs):
-        super(JobPostingEmailSubmission, self).__init__(self, *args, **kwargs)
+    def __init__(self, **kwargs):
+        super(JobPostingEmailSubmission, self).__init__(**kwargs)
+        self.created = kwargs.get('created', datetime.now())
 
     def _raw_part(self, part_mime_type):
         msg = email.message_from_string(self.email_body)
@@ -122,7 +129,7 @@ class JobPostingStatusChange(db.Model):
     job_posting_id = db.Column(db.Integer, db.ForeignKey('job_postings.id'), index=True, nullable=False)
     status = db.Column(db.Integer, index=True, nullable=False)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user = db.relationship('User')
+    user = db.relationship('User', uselist=False)
 
     def __repr__(self):
         return '<Job status change to: %s on %s by id:%d>' % (JobStatus(self.status), self.updated, self.user_id)

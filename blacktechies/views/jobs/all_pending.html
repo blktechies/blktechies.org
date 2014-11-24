@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+
+{% block main_content %}
+<div>
+  <h3>Pending posts</h3>
+  <div>
+	<ul>
+	{% for post in pending_posts %}
+	<li>
+	  <h4>{{ post.subject }}</h4>
+	  <div>
+		<p>{{ post.email_body }}</p>
+	  </div>
+	</li>
+	{% endfor %}
+	</ul>
+  </div>
+</div>
+{% endblock %}

@@ -6,7 +6,7 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from blacktechies import app
 
-app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
 # db_session = scoped_session(sessionmaker(autocommit=False,
 #                                          autoflush=False,
@@ -14,15 +14,15 @@ db = SQLAlchemy(app)
 # Base = declarative_base()
 # Base.query = db_session.query_property()
 
-def init_db():
+def create_all():
     # import all modules here that might define models so that
     # they will be registered properly on the metadata.  Otherwise
     # you will have to import them first before calling init_db()
     import blacktechies.models.job
     import blacktechies.models.user
-    db.metadata.create_all(bind=engine)
+    db.create_all()
 
 def teardown_db():
     import blacktechies.models.job
     import blacktechies.models.user
-    db.metadata.drop_all(bind=engine)
+    db.drop_all()
