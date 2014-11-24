@@ -1,5 +1,4 @@
-{% extends "layouts/base.html" %}
-
+{% extends "jobs/base.html" %}
 {% block main_content %}
 <div>
   <h3>Pending posts</h3>
@@ -7,10 +6,9 @@
 	<ul>
 	{% for post in pending_posts %}
 	<li>
-	  <h4>{{ post.subject }}</h4>
-	  <div>
-		<p>{# {{ post.raw_html() }} #}</p>
-	  </div>
+	  <a href="{{ url_for('jobs.pending_detail', post_id=post.id) }}">
+		<h4>{{ post.subject }}</h4>
+	  </a>
 	</li>
 	{% endfor %}
 	</ul>

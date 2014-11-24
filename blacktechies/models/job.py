@@ -1,4 +1,5 @@
 import email
+import quopri
 from datetime import datetime
 
 from blacktechies.database import db
@@ -89,10 +90,13 @@ class JobPostingEmailSubmission(db.Model):
         msg = email.message_from_string(self.email_body)
         body = None
         for part in msg.walk():
-            if part.get_content_type == part_mime_type:
+            if part.get_content_type() == part_mime_type:
                 encoded_body = part.get_payload()
                 body = quopri.decodestring(encoded_body)
         return body
+
+    def email_obj(self):
+        return email.message_from_string(self.email_body)
 
     def raw_html(self):
         return self._raw_part('text/html')

@@ -1,0 +1,26 @@
+{% extends "jobs/base.html" %}
+
+{% block main_content %}
+<div>
+  <h3>{{ post.subject }}</h3>
+  {#
+  {% set clean_html = post.clean_html() -%}
+  {% if clean_html %}
+  <div>
+	{% raw %}
+	{{ clean_html }}
+	{% endraw %}
+  </div>
+  {% else %}
+  <div>
+	{{ post.raw_text() }}
+  </div>
+  {% endif %}
+  #}
+</div>
+<div>
+  <code>
+	{{ post.clean_html()|safe }}
+  </code>
+</div>
+{% endblock %}
