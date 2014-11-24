@@ -98,7 +98,7 @@ class JobPostingEmailSubmission(db.Model):
         return self._raw_part('text/html')
 
     def raw_text(self):
-        return self._raw_part('text/html')
+        return self._raw_part('text/plain')
 
     def clean_html(self):
         return self._clean_html(self.raw_html())

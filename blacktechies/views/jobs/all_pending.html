@@ -9,7 +9,7 @@
 	<li>
 	  <h4>{{ post.subject }}</h4>
 	  <div>
-		<p>{{ post.email_body }}</p>
+		<p>{# {{ post.raw_html() }} #}</p>
 	  </div>
 	</li>
 	{% endfor %}
