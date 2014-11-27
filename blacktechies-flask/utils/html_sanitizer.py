@@ -23,6 +23,6 @@ class HTMLCleaner(object):
 
     def autolink_html(self, html):
         tree = lxmlhtml.fragment_fromstring(html, create_parent=True)
-        lxmlhtml.clean.autlink
+        lxmlhtml.clean.autolink(tree)
 
 html_cleaner = HTMLCleaner()
