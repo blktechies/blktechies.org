@@ -1,5 +1,10 @@
 {% extends "jobs/base.html" %}
 
+{% block add_head_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/backbone/1.1.2/backbone-min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/jobs/pending_selection.js') }}"></script>
+{% endblock %}
+
 {% block main_content %}
 <div>
   <h3>{{ post.subject }}</h3>

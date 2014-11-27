@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-import string
-from random import choice
-
 from blacktechies.database import db
-
+from blacktechies.utils.string import random_string
 
 class User(db.Model):
     STATUS_ACTIVE = 0
@@ -85,5 +82,4 @@ class UserRole(db.Model):
 
 
 def random_username(prefix="anonymous", suffix_length=16, join_str="_"):
-    random_suffix = join_str.join(choice(string.ascii_uppercase + string.digits) for _ in range(suffix_length))
-    return prefix + random_suffix
+    return join_str.join([prefix, random_string(suffix_length)])

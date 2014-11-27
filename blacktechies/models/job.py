@@ -5,7 +5,7 @@ from datetime import datetime
 
 from blacktechies.database import db
 from blacktechies.models.user import User, UserEmail
-from blacktechies.utils import html_sanitizer
+from blacktechies.utils.html_sanitizer import html_cleaner
 
 # What a hack...
 class JobOption(object):
@@ -71,6 +71,16 @@ class JobPosting(db.Model):
             summary = self.body[:50]
         return '<Job %r: %r>' % (self.id, summary)
 
+    @db.validates('title', 'body')
+    def clean(self, key, html):
+        html = html_cleaner.strip_tags(html)
+        if key == 'title':
+            assert len(html) > 10
+        elif key == 'body':
+            assert len(html) > 200
+
+        setattr(self, key, html)
+
 class JobPostingEmailSubmission(db.Model):
     __tablename__ = 'job_posting_email_submissions'
     id = db.Column(db.Integer, primary_key=True)
@@ -116,7 +126,7 @@ class JobPostingEmailSubmission(db.Model):
         return self._clean_html(self.raw_html())
 
     def _clean_html(self, html):
-        return html_sanitizer.clean_html(html)
+        return html_cleaner.clean_html(html)
 
     def separate_text_fields(self):
         if self.html or self.plain_text:

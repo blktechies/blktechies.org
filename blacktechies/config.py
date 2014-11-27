@@ -1,5 +1,8 @@
 import os
 
+if os.getenv('BLACKTECHIES_SECRET_KEY') is None:
+    raise RuntimeError("Secret key must be specified")
+
 class Config(object):
     DEBUG = False
     TESTING = False
