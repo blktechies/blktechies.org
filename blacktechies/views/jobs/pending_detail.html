@@ -1,23 +1,25 @@
 {% extends "jobs/base.html" %}
 
+{% block add_head_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/backbone/1.1.2/backbone-min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/jobs/pending_selection.js') }}"></script>
+{% endblock %}
+
 {% block main_content %}
 <div>
   <h3>{{ post.subject }}</h3>
-  {#
-  {% set clean_html = post.clean_html() -%}
-  {% if clean_html %}
-  <div>
-	{% raw %}
-	{{ clean_html }}
-	{% endraw %}
-  </div>
+  {% set plain_text = post.raw_text() -%}
+  {% if plain_text %}
+  <pre class="msg_content">
+	{{ plain_text }}
+  </pre>
   {% else %}
   <div>
-	{{ post.raw_text() }}
+	{{ post.clean_html()|safe }}
   </div>
   {% endif %}
-  #}
 </div>
+<hr>
 <div>
   <code>
 	{{ post.clean_html()|safe }}

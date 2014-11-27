@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import email
 import quopri
 from datetime import datetime
@@ -53,10 +54,13 @@ class JobPosting(db.Model):
     body = db.Column(db.Text, nullable=False)
     posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     status = db.Column(db.Integer, nullable=False, default=JobStatus.PENDING)
-    email_body = db.Column(db.Text)
+    submission_id = db.Column(db.Integer, db.ForeignKey('job_posting_email_submissions'))
     posted_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
+    moderator_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     # relationship columns
-    user = db.relationship('User', uselist=False)
+    posted_by = db.relationship('User', uselist=False, foreign_keys=[posted_by_user_id])
+    moderated_by = db.relationship('User', uselist=False, foreign_keys=[moderator_user_id])
+    submission = db.relationship('JobPostingEmailSubmission', uselist=False)
     status_changes = db.relationship('JobPostingStatusChange')
 
     def __repr__(self):
@@ -89,10 +93,14 @@ class JobPostingEmailSubmission(db.Model):
     def _raw_part(self, part_mime_type):
         msg = email.message_from_string(self.email_body)
         body = None
-        for part in msg.walk():
-            if part.get_content_type() == part_mime_type:
-                encoded_body = part.get_payload()
-                body = quopri.decodestring(encoded_body)
+        if msg.is_multipart():
+            for part in msg.walk():
+                if part.get_content_type() == part_mime_type:
+                    charset = part.get_content_charset()
+                    encoded_body = part.get_payload(decode=True)
+                    body = unicode(encoded_body, charset)
+        else:
+            raise ValueError("Message is not multi-part")
         return body
 
     def email_obj(self):

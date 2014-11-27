@@ -1,7 +1,7 @@
 {% set nav_bar = [
-	(url_for('main.index'), 'index', 'Home'),
-	(url_for('main.meetup'), 'meetup', 'Meetup'),
-	(url_for('jobs.index'), 'jobs', 'Jobs Board'),
+    (url_for('main.index'), 'index', 'Home'),
+    (url_for('main.meetup'), 'meetup', 'Meetup'),
+    (url_for('jobs.index'), 'jobs', 'Jobs Board'),
 ] -%}
 {% set active_page = active_page|default('index') -%}
 {% block html %}
@@ -9,8 +9,12 @@
 <html lang="en">
   {% block head %}
   <head>
+    {% block meta_tags %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block add_meta_tags %}
+    {% endblock %}
+    {% endblock %}
     <title>{% block title %}Welcome{% endblock %} | KyleWpppd.com</title>
     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     {% block head_styles %}
@@ -19,6 +23,8 @@
     {% block head_scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.1/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/lodash/2.4.1/lodash.compat.js') }}"></script>
+    {% block add_head_scripts %}
+    {% endblock %}
     {% endblock %}
   </head>
   {% endblock %}
@@ -26,22 +32,22 @@
   <body>
     <nav class="navbar navbar-default navbar-static-top" style="border: 0;">
       <div class="container">
-	<header class="site-header">
+    <header class="site-header">
           <h1>Black Techies</h1>
-	</header>
+    </header>
 
       <div class="row">
-	<div class="col-sm-12">
-	  <nav class="header-nav">
+    <div class="col-sm-12">
+      <nav class="header-nav">
         <ul class="nav nav-tabs">
-		  {% for href, id, title in nav_bar %}
-		  <li role="presentation"  {% if id == active_page %} class="active" {% endif %}>
-			<a href="{{ href }}">{{ title }}</a>
-		  </li>
-		  {% endfor %}
+          {% for href, id, title in nav_bar %}
+          <li role="presentation"  {% if id == active_page %} class="active" {% endif %}>
+            <a href="{{ href }}">{{ title }}</a>
+          </li>
+          {% endfor %}
         </ul>
-	  </nav>
-	</div>
+      </nav>
+    </div>
 
       </div>
     </nav>

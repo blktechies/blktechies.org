@@ -1,15 +1,18 @@
+# -*- coding: utf-8 -*-
 from os import getenv
 
 from flask import Flask, session, g, render_template
+from flask_wtf.csrf import CsrfProtect
+from blacktechies import config
 
 app = Flask('blacktechies', template_folder='views')
-if getenv('BLACKTECHIES_COM_ENVIRONMENT', False) == 'Development':
-    app.debug = True
+CsrfProtect(app)
 
-## @@FIXME ##
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('errors/404.html'), 404
+if getenv('BLACKTECHIES_COM_ENVIRONMENT', False) == 'Development':
+    app.config.from_object(config.Development)
+else:
+    app.config.from_object(config.Production)
+
 
 from blacktechies.controllers import main
 from blacktechies.controllers import jobs

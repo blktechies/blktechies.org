@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """This module is responsible for retrieving new email submissions off of the email server"""
 
 import imaplib
