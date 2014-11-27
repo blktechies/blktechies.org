@@ -12,4 +12,4 @@
 *.pyo
 
 # VirtualEnv folder
-/.virtualenv
+/.virtualenv*
