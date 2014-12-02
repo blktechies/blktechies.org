@@ -6,14 +6,15 @@ from flask_wtf import Form
 from wtforms import validators
 from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField
 
-from blacktechies.models.job import JobPosting, JobPostingEmailSubmission
+from blacktechies.models.jobposting import JobPosting
+from blacktechies.models.emailedjobsubmission import JobPostingEmailSubmission
 from blacktechies.models.user import User
 
 mod = Blueprint('jobs', __name__, url_prefix='/jobs')
 
 class ModerateEmailSubmissionForm(Form):
-    title = StringField(u'Job Post Title', [validators.required(), validators.length(max=250, min=10)])
-    body = TextAreaField(u'Job Post Description',[validators.required(), validators.length(min=140, max=3*1024)])
+    title = StringField('Job Post Title', [validators.required(), validators.length(max=250, min=10)])
+    body = TextAreaField('Job Post Description',[validators.required(), validators.length(min=140, max=3*1024)])
     submission_id = HiddenField(validators=[validators.required()])
     timestamp = HiddenField(validators=[validators.required()])
 

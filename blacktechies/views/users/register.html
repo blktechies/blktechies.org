@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+{% from 'helpers/_wtformhelpers.html' import render_field, render_hfield %}
+
+{% block title %}Register{% endblock %}
+
+{% block main_content %}
+<form class="form" method="POST">
+  {% set form = registration_form %}
+  {{ form.hidden_tag() }}
+  {{ render_hfield(form.username) }}
+  {{ render_hfield(form.email) }}
+  {{ render_hfield(form.password) }}
+  {{ render_hfield(form.confirm_password) }}
+  <button type="submit" value="submit" class="btn btn-block btn-primary btn-lg">Register</button>
+</form>
+{% endblock %}

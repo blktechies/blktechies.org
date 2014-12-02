@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import hashlib
 import hmac
+from datetime import timedelta
+
+from wtforms.validators import ValidationError
 
 from blacktechies import app
+from blacktechies.utils.form import validate_ts
 
 class HMACHashBase(object):
     default_keys = ('key', 'hash_algo', 'hex_digest', 'errors')
@@ -90,5 +94,27 @@ class HMACHashMatch(HMACHashBase):
             is_match = (a == b) and is_match
         return is_match
 
+class FormTimestamp(object):
+    default_max = timedelta(hours=12).total_seconds()
+
+    def __init__(self, weeks=0, days=0, hours=0, minutes=0, seconds=0, message=None):
+        td = timedelta(weeks=weeks, days=days, hours=hours, minutes=minutes, seconds=seconds)
+        max_age = td.total_seconds()
+
+        if max_age < 0:
+            raise ValueError("Timerange must be positive")
+        elif max_age == 0:
+            max_age = self.default_max
+        self.max_age = max_age
+        if not message:
+            message = "This form has expired. Please confirm the information and re-submit."
+        self.message = message
+
+    def __call__(self, form, field):
+        ts = field.data
+        if not validate_ts(ts, self.max_age):
+            raise ValidationError(self.message)
+
 hmac_match = HMACHashMatch()
 hmac_hash = HMACHash()
+form_max_age = FormTimestamp

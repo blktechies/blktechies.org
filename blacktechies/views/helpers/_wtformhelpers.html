@@ -1,5 +1,9 @@
-{% macro render_field(field, layout=None, control_width=3, classprefix=None, form_width=12) -%}
+{% macro render_field(field, layout=None, control_width=3, classprefix=None, form_width=12, placeholder=None) -%}
 {% set label_width = form_width - control_width %}
+{% if placeholder is none: %}
+  {% set placeholder = field.description %}
+{% endif %}
+
 <div class="form-group {% if field.errors %}has-error{% endif %}">
   <label for="{{ field.id }}"
          class="control-label {% if layout == 'horizontal' %}{{ classprefix ~ '-' ~ label_width }}{% endif %}">
@@ -7,18 +11,24 @@
   </label>
   {% if layout == 'horizontal' %}
   <div class="{{ classprefix ~ '-' ~ control_width }}">
-  {% endif %}
-    {{ field(**kwargs)|safe }}
+    {% endif %}
+
+    {{ field(class_='form-control', placeholder=placeholder, **kwargs)|safe }}
   {% if layout == 'horizontal': %}
   </div>
   {% endif %}
   {% if field.errors %}
   <div class="form-field-errors">
-    <ul class="form-field-errors-error-list">
+    <ul class="form-field-errors-error-list list-unstyled">
     {% for error in field.errors %}
       <li class="form-field-errors-error-item">{{ error }}</li>
     {% endfor %}
     </ul>
   </div>
   {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_hfield(field, control_width=3, classprefix=None, form_width=12) -%}
+{{ render_field(field, 'horizontal', control_width, classprefix, form_width) }}
 {% endmacro %}

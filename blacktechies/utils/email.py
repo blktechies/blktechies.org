@@ -3,7 +3,6 @@
 import imaplib
 import email
 import quopri
-import logging
 
 class EmailFetcher(object):
     def __init__(self, host=None, use_ssl=True):
@@ -66,6 +65,8 @@ class EmailParser(object):
     MIME_PLAINTEXT = 'text/plain'
 
     def __init__(self, msg):
+        if isinstance(msg, str):
+            msg = email.message_from_string(msg)
         self.msg = msg
 
     def get_part(self, part_mime_type):
