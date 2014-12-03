@@ -4,9 +4,17 @@ from blacktechies.utils.string import random_string
 
 
 class FormSigner(object):
-    def generate_ts(self):
+    def __init__(self, encoding=None):
+        if not encoding:
+            encoding = 'utf-8'
+        self.encoding = encoding
+
+    def generate_ts(self, as_string=True, encoding=None):
         random = random_string(10)
-        return time_signer.sign(random)
+        signed = time_signer.sign(random)
+        if as_string:
+            signed = signed.decode(encoding or self.encoding)
+        return signed
 
     def validate_ts(self, value, max_age=0, max_seconds=0, max_minutes=0, max_hours=0, max_days=0, max_weeks=0):
         """Validates that a form field with a timestamp has been submitted

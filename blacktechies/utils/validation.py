@@ -113,6 +113,7 @@ class FormTimestamp(object):
     def __call__(self, form, field):
         ts = field.data
         if not validate_ts(ts, self.max_age):
+            import pdb; pdb.set_trace()
             raise ValidationError(self.message)
 
 hmac_match = HMACHashMatch()

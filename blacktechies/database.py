@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from blacktechies import db as db_
-
-db = db_
+from blacktechies import db
 
 def create_all():
     # import all modules here that might define models so that

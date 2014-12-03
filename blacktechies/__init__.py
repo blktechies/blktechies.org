@@ -9,6 +9,7 @@ if getenv('BLACKTECHIES_ENVIRONMENT', False) == 'Development':
     app.config.from_object(config.Development)
 else:
     app.config.from_object(config.Production)
+
 db = SQLAlchemy(app)
 
 from blacktechies import app_init

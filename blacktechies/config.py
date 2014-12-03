@@ -25,16 +25,16 @@ class FlaskLoginConfig(object):
 class FlaskUserConfig(object):
     USER_PASSWORD_HASH = 'bcrypt'
 
-
 class Config(MailConfig, FlaskUserConfig, FlaskLoginConfig, FlaskWTFConfig):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['BLACKTECHIES_SECRET_KEY']
+    SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/blackteches-dev-db.sqlite3'
 
 class Development(Config):
     DEBUG = True
-    SQL_ALCHEMY_DATABASE_URI = 'sqlite:///tmp/blackteches-dev-db.sqlite3'
+
 
 class Production(Config):
     DEBUG = False

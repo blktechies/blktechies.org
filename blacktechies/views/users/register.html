@@ -4,7 +4,14 @@
 {% block title %}Register{% endblock %}
 
 {% block main_content %}
-<form class="form" method="POST">
+<form class="form" method="POST" action="{{ url_for('users.register') }}">
+  {% if errors %}
+  <ul>
+    {% for error in errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
   {% set form = registration_form %}
   {{ form.hidden_tag() }}
   {{ render_hfield(form.username) }}

@@ -1,0 +1,22 @@
+{% extends 'layouts/base.html' %}
+{% from 'helpers/_wtformhelpers.html' import render_field, render_hfield %}
+
+{% block title %}Login{% endblock %}
+
+{% block main_content %}
+<form class="form" method="POST" action="{{ url_for('users.login') }}">
+  {% set form = login_form %}
+  {{ form.hidden_tag() }}
+  {{ render_hfield(form.username) }}
+  {{ render_hfield(form.password) }}
+  {{ render_hfield(form.remember_me) }}
+  {% if errors %}
+  <ul>
+    {% for error in errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <button type="submit" value="submit" class="btn btn-block btn-primary btn-lg">Login</button>
+</form>
+{% endblock %}

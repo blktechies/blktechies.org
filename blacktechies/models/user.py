@@ -3,21 +3,27 @@ import re
 import string
 
 from flask import current_app
-from flask_user import UserMixin
+from flask_login import UserMixin
 from sqlalchemy.orm import validates
+from sqlalchemy.ext.hybrid import hybrid_property
+
+from blacktechies import app
 from blacktechies.database import db
 from blacktechies.utils.string import random_string
+from blacktechies.utils.password import encrypt_password, verify_password
 
 
 class User(db.Model, UserMixin):
     STATUS_ACTIVE = 0
-    STATUS_NEEDS_ACTIVATION = 1
+    STATUS_UNCONFIRMED_EMAIL = 1
     STATUS_SPAM = 2
+    STATUS_INACTIVE = 3
     STATUS_DELETED = 9
 
     STATUSES = {
         STATUS_ACTIVE: 'active',
-        STATUS_NEEDS_ACTIVATION: 'inactive',
+        STATUS_UNCONFIRMED_EMAIL: 'unconfirmed email',
+        STATUS_INACTIVE: 'inactive',
         STATUS_SPAM: 'spam',
         STATUS_DELETED: 'deleted',
     }
@@ -28,21 +34,21 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     # user auth
     username = db.Column(db.String(50), nullable=False, unique=True, index=True)
-    password = db.Column(db.String(255), nullable=False, default='')
+    _password = db.Column('password', db.String(255), nullable=False, default='')
     reset_password_token = db.Column(db.String(100), nullable=False, default='')
     is_enabled = db.Column(db.Boolean, nullable=False, default=False)
     first_name = db.Column(db.String(127), nullable=False, default='')
     last_name = db.Column(db.String(127), nullable=False, default='')
-    status = db.Column(db.Integer, nullable=False, default=STATUS_NEEDS_ACTIVATION)
+    status = db.Column(db.Integer, nullable=False, default=STATUS_UNCONFIRMED_EMAIL)
     # Relationship columns
-    email_addresses = db.relationship('UserEmail')
+    email_addresses = db.relationship('UserEmail', uselist=True, back_populates='user')
     roles = db.relationship('Role', secondary='user_roles')
     open_ids = db.relationship('UserOpenID')
     job_postings = db.relationship('JobPosting', primaryjoin="User.id == JobPosting.posted_by_user_id")
 
     @staticmethod
     def new_inactive_user():
-        user = User(is_enabled=False, status=User.STATUS_NEEDS_ACTIVATION)
+        user = User(is_enabled=False, status=User.STATUS_UNCONFIRMED_EMAIL)
         user.username = random_username()
         return user
 
@@ -89,12 +95,13 @@ class User(db.Model, UserMixin):
         for pattern, flags in bs_regexes:
             if re.match(pattern, password, flags):
                 raise too_simple
-        return current_app.user_manager.hash_password(password)
+        password = encrypt_password(password)
+        return password
 
     @validates('first_name', 'last_name')
     def validate_name(self, key, name):
         valid = re.compile('^[\w\s-]*$') # only word-characters and whitespace.
-        if not re.match(name):
+        if not valid.match(name):
             raise ValueError("%s contains invalid characters" % (key))
         return name
 
@@ -103,6 +110,56 @@ class User(db.Model, UserMixin):
         status = int(status)
         if status not in self.STATUSES:
             raise ValueError("Invalid status '%d' for user" % status)
+
+    def is_active(self):
+        return ((self.status == self.STATUS_ACTIVE or
+                 self.status == self.STATUS_UNCONFIRMED_EMAIL) and
+                self.is_enabled)
+
+
+    @property
+    def secure_token(self):
+        return make_secure_token(str(self.id), self.password)
+
+    @property
+    def primary_email(self):
+        for email in self.email_addresses:
+            if email.is_primary:
+                return email
+        else:
+            return None
+        # No primary email, so we have to set one...
+        self.email_addresses[0].is_primary = true
+
+    @primary_email.setter
+    def primary_email(self, new_email):
+        for email in self.email_addresses:
+            email.is_primary = Falsee
+        new_email.is_primary = True
+        if new_email not in self.email_addresses:
+            self.email_addresses.append(new_email)
+
+    def verify_password(self, plaintext_password):
+        """Verifies that the plaintext_password hashes to the same value as
+        the user's password.
+        """
+        return verify_password(plaintext_password, self.password)
+
+    @hybrid_property
+    def password(self):
+        if re.match('^\$2a\$\d\d\$[a-zA-Z0-9\./]{53}$', self._password):
+            return self._password
+
+    @password.setter
+    def password(self, password):
+        self.validate_password(password)
+        self._password = password
+
+    def get_id(self):
+        if self.id:
+            return str(self.id)
+        # allows two unsaved objects to be compared
+        return ':'.join(['None', str(id(self))])
 
 
 class UserOpenID(db.Model):
@@ -130,11 +187,10 @@ class UserEmail(db.Model):
     confirmed_at = db.Column(db.DateTime())
     is_primary = db.Column(db.Boolean(), nullable=True, default=False)
     # Relationship columns
-    user = db.relationship(User, uselist=False)
+    user = db.relationship(User, uselist=False, back_populates='email_addresses')
     # This index should prevent a user from having multiple primary emails
     __table_args__ = (db.Index('idx_primary_email', 'user_id', 'is_primary',
                             postgresql_where=is_primary == True, unique=True),)
-
 
     def is_confirmed(self):
         return bool(self.confirmed_at)
