@@ -1,0 +1,21 @@
+Blktechies.org
+--------------
+
+### This project is under development and not yet ready for general release
+
+* To get this to run, you'll need some environment variables
+defined. Look in `blacktechies/config.py` for what you need. The app
+will throw exceptions (by design)  because it's using `os.environ[KEY]`
+rather than `os.getenv`.
+
+* You'll need to install the requirements.
+    $ pip install -r requirements.txt
+
+* You'll also need to run the schema. You can do that with the folllowing:
+    $ python3
+    (Python prompt)
+    >>> import blacktechies
+    >>> blacktechies.database.init_all()
+
+* Tickets for the project plan will be added soon, but this needed to
+  get into the open where more people can take a look.
