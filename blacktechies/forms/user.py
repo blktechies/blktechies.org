@@ -3,12 +3,13 @@ from wtforms import validators
 from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField, PasswordField, BooleanField
 
 from blacktechies.utils.validation import FormTimestamp
+from blacktechies.utils.form import generate_ts
 from blacktechies.models.user import User
 
 class LoginForm(Form):
-    timestamp = HiddenField('timestamp', validators=[validators.required(), FormTimestamp(days=1)])
-    username = StringField('Username or Email', validators=[validators.required()])
-    password = PasswordField('Password', validators=[validators.required()])
+    timestamp = HiddenField('timestamp', validators=[validators.required(), FormTimestamp(days=1)], default=generate_ts())
+    username = StringField('Username or Email', validators=[validators.required()], description="Username or Email")
+    password = PasswordField('Password', validators=[validators.required()], description="Password")
     remember_me = BooleanField('Remember me')
 
 class RegistrationForm(Form):

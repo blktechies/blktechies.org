@@ -16,11 +16,25 @@ def _init_mail(app, db):
 def _init_login(app, db):
     from flask_login import LoginManager
     from blacktechies import login
+    from blacktechies.forms.user import LoginForm
     login_manager = LoginManager(app)
     bt_manager = login.BlacktechiesLoginManager(login_manager)
     login_manager.login_view = login_manager.refresh_view = 'users.login'
     login_manager.login_message = "Please login to access this page."
 
+    @app.context_processor
+    def make_logins_available_everywhere():
+        """Makes the login form available in all templates by calling the
+        'get_login_form' function from a template::
+
+            {% set login_form = get_login_form() %}
+
+        The function is named 'get_login_form' so it doesn't collide
+        with the 'login_form' name on existing templates.
+        """
+        def get_login_form():
+            return LoginForm()
+        return dict(get_login_form=get_login_form)
 
 
 def _init_flask_user(app, db):

@@ -10,7 +10,10 @@ class BlacktechiesLoginManager(object):
 
         @login_manager.user_loader
         def user_loader(string_id):
-            user_id = int(string_id)
+            try:
+                user_id = int(string_id)
+            except:
+                user_id = 0
             return self.find_by_id(user_id)
 
         @login_manager.token_loader

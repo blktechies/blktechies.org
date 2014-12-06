@@ -37,18 +37,21 @@
           <div class="row login-wrapper">
             <h1 class="col-md-6">Black Techies</h1>
             <div class="col-md-6 text-right">
-              <form class="form-inline" role="form" method="POST" action="{{ url_for('users.login') }}">
+              {% block header_login_form %}
+                {% set hlform = get_login_form() %}
+                <form class="form-inline" role="form" method="POST" action="{{ url_for('users.login') }}">
+                  {{ hlform.hidden_tag() }}
                 <div class="form-group">
-                  <label class="sr-only" for="{{ '' }}">Username or email</label>
-                  <input type="text" class="form-control" placeholder="Username or email" value="">
+                  <label class="sr-only" for="{{ hlform.username.id  }}">Username or email</label>
+                  {{ hlform.username(class_="form-control input-sm", placeholder=hlform.username.description)|safe }}
                 </div>
                 <div class="form-group">
-                    <label class="sr-only" for="{{ '' }}">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" value="">
+                  <label class="sr-only" for="{{ hlform.password.id  }}">Password</label>
+                  {{ hlform.username(class_="form-control input-sm", placeholder="Password")|safe }}
                 </div>
-
-                <input class="btn btn-primary" type="submit" value="Login">
+                <button class="btn btn-primary btn-sm" type="submit">Login</button>
               </form>
+              {% endblock %}
             </div>
           </div>
         </header>
