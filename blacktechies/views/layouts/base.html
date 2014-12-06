@@ -15,10 +15,11 @@
     {% block add_meta_tags %}
     {% endblock %}
     {% endblock %}
-    <title>{% block title %}Welcome{% endblock %} | KyleWpppd.com</title>
+    <title>{% block title %}Welcome{% endblock %} | Black Techies</title>
     <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     {% block head_styles %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/vendor/bootstrap/3.3.1/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/blacktechies/css/base.css') }}">
     {% endblock %}
     {% block head_scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.1/jquery.min.js') }}"></script>
@@ -30,25 +31,40 @@
   {% endblock %}
   {% block body %}
   <body>
-    <nav class="navbar navbar-default navbar-static-top" style="border: 0;">
+    <nav class="blacktechies-navbar navbar navbar-default navbar-static-top">
       <div class="container">
-    <header class="site-header">
-          <h1>Black Techies</h1>
-    </header>
+        <header class="site-header">
+          <div class="row login-wrapper">
+            <h1 class="col-md-6">Black Techies</h1>
+            <div class="col-md-6 text-right">
+              <form class="form-inline" role="form" method="POST" action="{{ url_for('users.login') }}">
+                <div class="form-group">
+                  <label class="sr-only" for="{{ '' }}">Username or email</label>
+                  <input type="text" class="form-control" placeholder="Username or email" value="">
+                </div>
+                <div class="form-group">
+                    <label class="sr-only" for="{{ '' }}">Password</label>
+                    <input type="password" class="form-control" placeholder="Password" value="">
+                </div>
 
-      <div class="row">
-    <div class="col-sm-12">
-      <nav class="header-nav">
-        <ul class="nav nav-tabs">
-          {% for href, id, title in nav_bar %}
-          <li role="presentation"  {% if id == active_page %} class="active" {% endif %}>
-            <a href="{{ href }}">{{ title }}</a>
-          </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    </div>
-
+                <input class="btn btn-primary" type="submit" value="Login">
+              </form>
+            </div>
+          </div>
+        </header>
+        <div class="row">
+          <div class="col-sm-12">
+            <nav class="header-nav">
+              <ul class="nav nav-tabs">
+                {% for href, id, title in nav_bar %}
+                <li role="presentation"  {% if id == active_page %} class="active" {% endif %}>
+                  <a href="{{ href }}">{{ title }}</a>
+                </li>
+                {% endfor %}
+              </ul>
+            </nav>
+          </div>
+        </div>
       </div>
     </nav>
     <div class="container">

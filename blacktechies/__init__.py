@@ -17,6 +17,7 @@ from blacktechies import app_init
 app, db = app_init.init_app(app, db)
 
 
+
 from blacktechies.controllers import jobs, main, users
 app.register_blueprint(jobs.mod)
 app.register_blueprint(main.mod)
