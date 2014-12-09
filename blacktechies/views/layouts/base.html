@@ -37,21 +37,28 @@
           <div class="row login-wrapper">
             <h1 class="col-md-6">Black Techies</h1>
             <div class="col-md-6 text-right">
-              {% block header_login_form %}
-                {% set hlform = get_login_form() %}
-                <form class="form-inline" role="form" method="POST" action="{{ url_for('users.login') }}">
-                  {{ hlform.hidden_tag() }}
-                <div class="form-group">
-                  <label class="sr-only" for="{{ hlform.username.id  }}">Username or email</label>
-                  {{ hlform.username(class_="form-control input-sm", placeholder=hlform.username.description)|safe }}
-                </div>
-                <div class="form-group">
-                  <label class="sr-only" for="{{ hlform.password.id  }}">Password</label>
-                  {{ hlform.username(class_="form-control input-sm", placeholder="Password")|safe }}
-                </div>
-                <button class="btn btn-primary btn-sm" type="submit">Login</button>
-              </form>
+              {% if g.user and g.user.is_authenticated(): %}
+              {% block header_logged_in %}
+              Logged in as <a href="{{ url_for('users.home') }}">{{ g.user.username }}</a> |
+              <a href="{{ url_for('users.logout') }}" class="btn btn-default btn-xs btn-primary">Logout</a>
               {% endblock %}
+              {% else %}
+                {% block header_logged_out %}
+                {% set hlform = get_login_form() %}
+                  <form class="form-inline" role="form" method="POST" action="{{ url_for('users.login') }}">
+                    {{ hlform.hidden_tag() }}
+                  <div class="form-group">
+                    <label class="sr-only" for="{{ hlform.username.id  }}">Username or email</label>
+                    {{ hlform.username(class_="form-control input-sm", placeholder=hlform.username.description)|safe }}
+                  </div>
+                  <div class="form-group">
+                    <label class="sr-only" for="{{ hlform.password.id  }}">Password</label>
+                    {{ hlform.password(class_="form-control input-sm", placeholder="Password")|safe }}
+                  </div>
+                  <button class="btn btn-primary btn-sm" type="submit">Login</button>
+                </form>
+              {% endblock %}
+            {% endif %}
             </div>
           </div>
         </header>

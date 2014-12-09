@@ -195,6 +195,9 @@ class UserEmail(db.Model):
     def is_confirmed(self):
         return bool(self.confirmed_at)
 
+    def __str__(self):
+        return self.email
+
 class Role(db.Model):
     ADMIN = 'admin'
     MODERATOR = 'moderator'

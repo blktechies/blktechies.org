@@ -68,4 +68,4 @@ def logout():
 @login_required
 def home():
     name = current_user.username or current_user.primary_email.email
-    return "Welcome, %s!" % name
+    return render_template('users/home.html', user=current_user)
