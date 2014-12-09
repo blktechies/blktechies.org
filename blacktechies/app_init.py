@@ -14,9 +14,9 @@ def _init_mail(app, db):
     mail.init_app(app)
 
 def _init_login(app, db):
-    from flask_login import LoginManager
-    from blacktechies import login
-    from blacktechies.forms.user import LoginForm
+    from flask.ext.login import LoginManager
+    from blacktechies.apps.user.utils import login
+    from blacktechies.apps.user.forms import LoginForm
     login_manager = LoginManager(app)
     bt_manager = login.BlacktechiesLoginManager(login_manager)
     login_manager.login_view = login_manager.refresh_view = 'users.login'

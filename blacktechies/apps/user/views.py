@@ -3,12 +3,12 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from blacktechies import app
 from blacktechies.database import db
-from blacktechies.models.user import User, UserEmail
-from blacktechies.forms.user import RegistrationForm, LoginForm
+from blacktechies.apps.user.models import User, UserEmail
+from blacktechies.apps.user.forms import RegistrationForm, LoginForm
 from blacktechies.utils.form import generate_ts
 from blacktechies.utils.signer import serializer
 
-mod = Blueprint('users', __name__)
+mod = Blueprint('users', __name__, template_folder="templates")
 
 @mod.route('/login', methods=['GET', 'POST'])
 def login(unauthorized=False):
@@ -30,7 +30,7 @@ def login(unauthorized=False):
         else:
             errors.append("Username or password were incorrect.")
     login_form.timestamp.data = generate_ts()
-    return render_template('users/login.html', errors=errors, login_form=login_form)
+    return render_template('login.html', errors=errors, login_form=login_form)
 
 # @app.login_manager.unauthorized_handler
 # def unauthorized():
@@ -56,7 +56,7 @@ def register():
                 raise
             errors.append("There was a problem committing the registration. Please try again.")
     registration_form.timestamp.data = generate_ts()
-    return render_template('users/register.html', errors=errors, registration_form=registration_form)
+    return render_template('register.html', errors=errors, registration_form=registration_form)
 
 @mod.route('/logout', methods=['GET', 'POST'])
 def logout():
@@ -68,4 +68,4 @@ def logout():
 @login_required
 def home():
     name = current_user.username or current_user.primary_email.email
-    return render_template('users/home.html', user=current_user)
+    return render_template('home.html', user=current_user)

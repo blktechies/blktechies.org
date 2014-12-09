@@ -6,11 +6,11 @@ from flask_wtf import Form
 from wtforms import validators
 from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField
 
-from blacktechies.models.jobposting import JobPosting
-from blacktechies.models.emailedjobsubmission import JobPostingEmailSubmission
-from blacktechies.models.user import User
+from blacktechies.apps.job.models.jobposting import JobPosting
+from blacktechies.apps.job.models.emailedjobsubmission import JobPostingEmailSubmission
+from blacktechies.apps.user.models import User
 
-mod = Blueprint('jobs', __name__, url_prefix='/jobs')
+mod = Blueprint('jobs', __name__, url_prefix='/jobs', template_folder="templates")
 
 class ModerateEmailSubmissionForm(Form):
     title = StringField('Job Post Title', [validators.required(), validators.length(max=250, min=10)])
@@ -21,18 +21,18 @@ class ModerateEmailSubmissionForm(Form):
 @mod.route('/')
 def index():
     jobs = JobPosting.query.all()
-    return render_template('jobs/index.html', jobs=jobs)
+    return render_template('index.html', jobs=jobs)
 
 @mod.route('/pending')
 def pending():
     pending_posts = JobPostingEmailSubmission().query.all()
-    return render_template('jobs/all_pending.html', pending_posts=pending_posts)
+    return render_template('all_pending.html', pending_posts=pending_posts)
 
 @mod.route('/pending/<int:post_id>', methods=['GET'])
 def pending_detail(post_id, title=None, body=None):
     if not post:
         abort(404)
-    return render_template('jobs/pending_detail.html', post=post)
+    return render_template('pending_detail.html', post=post)
 
 @mod.route("/pending/<int:post_id>/promote", methods=['GET', 'POST'])
 def new_jobs_post(post_id):
@@ -62,7 +62,7 @@ def new_jobs_post(post_id):
             if db.session.commit():
                 http_status = 303
                 return redirect(url_for('jobs_post', post_id=new_posting.id), code=303)
-    return render_template('jobs/pending_promote.html', post=post, form=form)
+    return render_template('pending_promote.html', post=post, form=form)
 
 # @mod.route("/listing", methods=['POST'])
 # def new_jobs_post_boom():

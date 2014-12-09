@@ -17,10 +17,13 @@ from blacktechies import app_init
 
 app, db = app_init.init_app(app, db)
 
-from blacktechies.controllers import jobs, main, users
-app.register_blueprint(jobs.mod)
-app.register_blueprint(main.mod)
-app.register_blueprint(users.mod)
+from blacktechies.apps.main import views as main_views
+from blacktechies.apps.user import views as user_views
+from blacktechies.apps.job import views as job_views
+
+app.register_blueprint(job_views.mod)
+app.register_blueprint(main_views.mod)
+app.register_blueprint(user_views.mod)
 
 @app.before_request
 def g_user():

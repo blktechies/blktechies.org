@@ -4,8 +4,8 @@ import quopri
 from datetime import datetime
 
 from blacktechies.database import db
-from blacktechies.models.user import User, UserEmail
-from blacktechies.models.emailedjobsubmission import JobPostingEmailSubmission
+from blacktechies.apps.user.models import User, UserEmail
+from blacktechies.apps.job.models.emailedjobsubmission import JobPostingEmailSubmission
 # What a hack...
 class JobOption(object):
     _option_key = None

@@ -2,7 +2,7 @@ import email
 from datetime import datetime
 
 from blacktechies.database import db
-from blacktechies.models.user import User, UserEmail
+from blacktechies.apps.user.models import User, UserEmail
 from blacktechies.utils.email import EmailParser
 from blacktechies.utils.html import html_cleaner
 
