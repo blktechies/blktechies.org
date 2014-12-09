@@ -8,7 +8,7 @@ from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField
 
 from blacktechies.models.jobposting import JobPosting
 from blacktechies.models.emailedjobsubmission import JobPostingEmailSubmission
-from blacktechies.models.user import User
+from blacktechies.apps.user.models import User
 
 mod = Blueprint('jobs', __name__, url_prefix='/jobs')
 

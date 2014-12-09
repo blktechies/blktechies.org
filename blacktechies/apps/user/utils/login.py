@@ -1,5 +1,5 @@
-from blacktechies.models.user import User
 from blacktechies import app
+from blacktechies.apps import user
 
 class BlacktechiesLoginManager(object):
     enable_tokens = True
@@ -26,4 +26,4 @@ class BlacktechiesLoginManager(object):
     def find_by_id(self, user_id):
         if not user_id:
             return None
-        return User.query.get(user_id) or None
+        return user.models.User.query.get(user_id) or None

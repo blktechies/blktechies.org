@@ -4,7 +4,7 @@ from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField
 
 from blacktechies.utils.validation import FormTimestamp
 from blacktechies.utils.form import generate_ts
-from blacktechies.models.user import User
+from blacktechies.apps.user.models import User
 
 class LoginForm(Form):
     timestamp = HiddenField('timestamp', validators=[validators.required(), FormTimestamp(days=1)], default=generate_ts())
