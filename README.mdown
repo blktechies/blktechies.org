@@ -9,7 +9,7 @@ will throw exceptions (by design)  because it's using `os.environ[KEY]`
 rather than `os.getenv`.
 
 * You'll need to install the requirements.
-    $ pip install -r requirements.txt
+        $ pip install -r requirements.txt
 
 * You'll also need to run the schema. You can do that with the folllowing:
 
@@ -20,3 +20,16 @@ rather than `os.getenv`.
 
 * Tickets for the project plan will be added soon, but this needed to
   get into the open where more people can take a look.
+
+### Running the app
+
+Once all of the above have been satisfied, you can run
+
+    $ python3 run.py
+
+To launch the development server on `127.0.0.1:5000`.
+
+### Testing
+
+Testing is looking for an owner. `Pytest` or `unittest` are probably 
+the ideal frameworks, but it needs some love to get up and running.
