@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
 from datetime import time, timedelta
+
 
 from flask import Blueprint, render_template, abort, request, make_response, current_app
 from flask_wtf import Form
@@ -10,7 +12,8 @@ from blacktechies.apps.job.models.jobposting import JobPosting
 from blacktechies.apps.job.models.emailedjobsubmission import JobPostingEmailSubmission
 from blacktechies.apps.user.models import User
 
-mod = Blueprint('jobs', __name__, url_prefix='/jobs', template_folder="templates")
+_template_dir = os.path.dirname(__file__)
+mod = Blueprint('jobs', __name__, url_prefix='/jobs', template_folder=_template_dir + "/templates")
 
 class ModerateEmailSubmissionForm(Form):
     title = StringField('Job Post Title', [validators.required(), validators.length(max=250, min=10)])

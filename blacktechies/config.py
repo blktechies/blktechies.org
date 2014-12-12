@@ -1,13 +1,10 @@
 import os
 
-if os.getenv('BLACKTECHIES_SECRET_KEY') is None:
-    raise RuntimeError("Secret key must be specified")
-
 class MailConfig(object):
-    MAIL_USERNAME = os.environ['BLACKTECHIES_MAIL_USER']
-    MAIL_PASSWORD = os.environ['BLACKTECHIES_MAIL_PASSWORD']
+    MAIL_USERNAME = os.getenv('BLACKTECHIES_MAIL_USER', '')
+    MAIL_PASSWORD = os.getenv('BLACKTECHIES_MAIL_PASSWORD', '')
+    MAIL_SERVER = os.getenv('BLACKTECHIES_MAIL_SERVER', '')
     MAIL_DEFAULT_SENDER = "'Black Techies Mailer' <%s>" % MAIL_USERNAME
-    MAIL_SERVER = os.environ['BLACKTECHIES_MAIL_SERVER']
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USE_TLS = True
@@ -25,16 +22,17 @@ class FlaskLoginConfig(object):
 class FlaskUserConfig(object):
     USER_PASSWORD_HASH = 'bcrypt'
 
-class Config(MailConfig, FlaskUserConfig, FlaskLoginConfig, FlaskWTFConfig):
+class Config(FlaskUserConfig, FlaskLoginConfig, FlaskWTFConfig, MailConfig):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = os.environ['BLACKTECHIES_SECRET_KEY']
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/blackteches-dev-db.sqlite3'
+    SECRET_KEY = os.getenv('BLACKTECHIES_SECRET_KEY')
+
 
 class Development(Config):
     DEBUG = True
 
-
 class Production(Config):
     DEBUG = False
+

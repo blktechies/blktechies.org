@@ -1,3 +1,5 @@
+import os
+
 from flask import Blueprint, render_template, request, current_app, redirect, flash, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 
@@ -8,7 +10,8 @@ from blacktechies.apps.user.forms import RegistrationForm, LoginForm
 from blacktechies.utils.form import generate_ts
 from blacktechies.utils.signer import serializer
 
-mod = Blueprint('users', __name__, template_folder="templates")
+_template_dir = os.path.dirname(__file__)
+mod = Blueprint('users', __name__, template_folder=_template_dir + "/templates")
 
 @mod.route('/login', methods=['GET', 'POST'])
 def login(unauthorized=False):
@@ -42,7 +45,7 @@ def register():
     errors = []
     if registration_form.validate_on_submit():
         username = registration_form.username.data or User.random_username()
-        user = User(username=username, password=request.form['password'], is_active=True)
+        user = User(username=username, password=request.form['password'], is_enabled=True)
         user.status = User.STATUS_ACTIVE
         email = UserEmail(email=request.form['email'], is_primary=True)
         user.email_addresses.append(email)
