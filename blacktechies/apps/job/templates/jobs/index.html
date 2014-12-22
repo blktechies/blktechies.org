@@ -1,15 +1,21 @@
-{% extends "layouts/base.html" %}
+{% extends "jobs/base.html" %}
 {% set active_page = 'jobs' -%}
 {% block main_content %}
-Jobs:
-<ol>
-  {% for job in jobs %}
-  <li>
-    <div>
-      <div>{{ job.title }}</div>
-      <p>{{ job.body }}</p>
-    </div>
-  </li>
-  {% endfor %}
-</ol>
+  {% if jobs %}
+    Jobs:
+    <ol>
+      {% for job in jobs %}
+        <li>
+          <div>
+            <div><a href="{{ url_for('jobs.jobs_post', post_id=job.id) }}">{{ job.title }}</a></div>
+            <p>{{ job.summary() }}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <h3>No active listings found</h3>
+<p>Would you like to create a new listing?</p>
+<p><a class="btn btn-primary" href="{{ url_for('jobs.new_jobs_post') }}">Create a new listing</a></p>
+  {% endif %}
 {% endblock %}
