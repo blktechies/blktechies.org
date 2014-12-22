@@ -5,15 +5,17 @@ from datetime import time, timedelta
 
 from flask import Blueprint, render_template, abort, request, make_response, current_app
 from flask_wtf import Form
+from flask.ext.login import current_user, login_required
 from wtforms import validators
 from wtforms.fields import StringField, TextAreaField, IntegerField, HiddenField
+from blacktechies.utils.validation import FormTimestamp
+from blacktechies.utils.form import generate_ts
 
 from blacktechies.apps.job.models.jobposting import JobPosting
 from blacktechies.apps.job.models.emailedjobsubmission import JobPostingEmailSubmission
 from blacktechies.apps.user.models import User
 
-_template_dir = os.path.dirname(__file__)
-mod = Blueprint('jobs', __name__, url_prefix='/jobs', template_folder=_template_dir + "/templates")
+mod = Blueprint('jobs', __name__, url_prefix='/jobs', template_folder="templates")
 
 class ModerateEmailSubmissionForm(Form):
     title = StringField('Job Post Title', [validators.required(), validators.length(max=250, min=10)])
@@ -24,21 +26,25 @@ class ModerateEmailSubmissionForm(Form):
 @mod.route('/')
 def index():
     jobs = JobPosting.query.all()
-    return render_template('index.html', jobs=jobs)
+    return render_template('jobs/index.html', jobs=jobs)
+
 
 @mod.route('/pending')
+@login_required
 def pending():
     pending_posts = JobPostingEmailSubmission().query.all()
-    return render_template('all_pending.html', pending_posts=pending_posts)
+    return render_template('jobs/all_pending.html', pending_posts=pending_posts)
 
 @mod.route('/pending/<int:post_id>', methods=['GET'])
+@login_required
 def pending_detail(post_id, title=None, body=None):
     if not post:
         abort(404)
     return render_template('pending_detail.html', post=post)
 
 @mod.route("/pending/<int:post_id>/promote", methods=['GET', 'POST'])
-def new_jobs_post(post_id):
+@login_required
+def promote_pending_post(post_id):
     post = JobPostingEmailSubmission.query.get(post_id)
     if not post:
         abort(404)
@@ -65,24 +71,34 @@ def new_jobs_post(post_id):
             if db.session.commit():
                 http_status = 303
                 return redirect(url_for('jobs_post', post_id=new_posting.id), code=303)
-    return render_template('pending_promote.html', post=post, form=form)
+    return render_template('jobs/pending_promote.html', post=post, form=form)
 
-# @mod.route("/listing", methods=['POST'])
-# def new_jobs_post_boom():
-#     needs_submission_id = False
 
-#     if json:
-#         title = json.get('title')
-#         body = json.get('body')
-#         submission_id = json.get('submission_id')
-#     else:
-#         title = request.form['title']
-#         body = request.form['body']
-#         submission_id = request.form['submission_id']
-#     if not (title and body):
-#         abort(400)
-#     submission = JobPostingEmailSubmission.query.get(submission_id)
-#     if not submission:
-#         abort(400)
+class NewJobForm(Form):
+    timestamp = HiddenField('timestamp', validators=[validators.required(), FormTimestamp(days=1)], default=generate_ts())
+    title = StringField('Job Post Title', validators=[validators.required(message="Your post must have a title"),
+                                             validators.Length(min=10, max=200, message="Title can be from 10 to 200 characters long")])
+    body = TextAreaField('Job Description', validators=[validators.required(message="The post must have a description"),
+                                                        validators.length(max=2500, min=140, message="Job post was too small. (Or too big).")])
 
-#     posting = JobPosting
+
+@mod.route("/new_post", methods=['GET', 'POST'])
+@login_required
+def new_jobs_post():
+    form = NewJobForm()
+    if form.validate_on_submit():
+        posting = JobPosting()
+        posting.title = form.title.data
+        posting.body = form.body.data
+        posting.posted_by_user_id = current_user.id
+        db.session.add(posting)
+        if db.session.commit():
+            return redirect(url_for('.jobs_post', post_id=posting.id), code=303)
+    return render_template('jobs/new_post.html', form=form)
+
+@mod.route("/post/<int:post_id>")
+def jobs_post(post_id):
+    post = JobPosting.query.get(id=post_id)
+    if not post:
+        abort(404)
+    return render_template('jobs/post_detail.html', post=post)
