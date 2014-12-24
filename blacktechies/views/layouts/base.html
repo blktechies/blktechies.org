@@ -6,7 +6,7 @@
 {% set active_page = active_page|default('index') -%}
 {% block html %}
 <!doctype html>
-<html lang="en">
+<html lang="en" ng-app="blacktechies">
   {% block head %}
   <head>
     {% block meta_tags %}
@@ -22,7 +22,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/blacktechies/css/base.css') }}">
     {% endblock %}
     {% block head_scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.3/jquery.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/jquery/2.1.3/jquery.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/angular/1.3.8/angular.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='scripts/vendor/angular-ui/0.12.0/ui-bootstrap-tpls.min.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='scripts/blacktechies/app.min.js') }}"></script>
     {% block add_head_scripts %}
     {% endblock %}
     {% endblock %}
