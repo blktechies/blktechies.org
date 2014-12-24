@@ -16,7 +16,7 @@
           <div>Between you and {{ ct }} others</div>
         {%- endif -%}
         <div>
-          <a href="{{ url_for('messaging.conversation', conversation_id=conversation.id) }}">
+          <a href="{{ url_for('messaging.conversation_index', conversation_id=conversation.id) }}">
             {{ messages[conversation.id][0].body }}
           </a>
         </div>
