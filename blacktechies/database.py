@@ -17,3 +17,15 @@ def teardown_db():
     from blacktechies.apps.job import models as job_models
     from blacktechies.apps.messaging import models as messaging_models
     db.drop_all()
+
+def recreate_some(table_names):
+    tables = []
+    for name in table_names:
+        t = db.metadata.tables.get(name)
+        if t is None:
+            raise ValueError("Unknown Table: %s" % name)
+        tables.append(t)
+
+    for t in tables:
+        t.drop(db.engine)
+        t.create(db.engine)

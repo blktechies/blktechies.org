@@ -70,5 +70,4 @@ def logout():
 @mod.route('/home')
 @login_required
 def home():
-    name = current_user.username or current_user.primary_email.email
     return render_template('home.html', user=current_user)

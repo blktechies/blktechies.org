@@ -1,0 +1,27 @@
+{% extends "messaging/base.html" %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block main_content %}
+  <ul>
+    {% for conversation in conversations %}
+      <li>
+        {% set other_users = conversation.other_users(g.user) %}
+        {% set ct = other_users|length() %}
+        {%- if ct == 0: -%}
+          <div>This one is a secret. Shh!</div>
+        {%- elif ct == 1: %}
+          <div>Between you and {{ other_users[0].username }}</div>
+        {%- else: -%}
+          <div>Between you and {{ ct }} others</div>
+        {%- endif -%}
+        <div>
+          <a href="{{ url_for('messaging.conversation', conversation_id=conversation.id) }}">
+            {{ messages[conversation.id][0].body }}
+          </a>
+        </div>
+      </li>
+  {% endfor %}
+  </ul>
+
+{% endblock %}

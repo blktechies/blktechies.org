@@ -1,0 +1,29 @@
+{% extends "messaging/base.html" %}
+{% from 'helpers/_wtformhelpers.html' import render_field %}
+
+{% block title %}
+  {% if is_conversation: %}
+    Reply to Thread
+  {% else: %}
+    Create New Message
+  {% endif %}
+{% endblock %}
+
+{% block main_content %}
+
+  <form class="form" method="POST"
+        {%- if is_conversation: -%}
+          action="{{ url_for('messaging.new_reply', conversation_id=conversation_id) }}"
+        {%- else: -%}
+          action="{{ url_for('messaging.new_message') }}"
+        {%- endif -%}
+        >
+        {{ form.hidden_tag() }}
+        {{ render_field(form.to_usernames) }}
+        {% if not is_conversation: %}
+          {{ render_field(form.subject) }}
+        {% endif %}
+        {{ render_field(form.body) }}
+        <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+{% endblock %}
