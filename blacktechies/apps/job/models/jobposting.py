@@ -1,25 +1,32 @@
 # -*- coding: utf-8 -*-
-import email
-import quopri
+import re
 from datetime import datetime
 
+from babel.dates import format_datetime
+
+from blacktechies.utils.html import html_cleaner
+from blacktechies.utils.text import summarize_text
 from blacktechies.database import db
 from blacktechies.apps.user.models import User, UserEmail
 from blacktechies.apps.job.models.emailedjobsubmission import JobPostingEmailSubmission
+
+
 # What a hack...
 class JobOption(object):
     _option_key = None
 
     def __init__(self, option):
-        if option not in self[_option_key]:
+        if option not in self[self._option_key]:
             raise KeyError(msg='No such option: %r' % option)
         self.value = option
 
     def __repr__(self):
         return self.options[self.value]
 
+
 class JobStatus(JobOption):
     _option_key = 'statuses'
+
 
 class JobPosting(db.Model):
     STATUS_ACTIVE = 1
@@ -77,8 +84,26 @@ class JobPosting(db.Model):
             assert len(html) > 10
         elif key == 'body':
             assert len(html) > 200
+        return html
 
-        setattr(self, key, html)
+    def summary(self, sentence_ct=2):
+        summary = summarize_text(sentence_ct)
+        if not summary:
+            words = []
+            char_ct = 0
+            whitespace = re.compile('\s+')
+            for word in whitespace.split(self.body):
+                words.append(word)
+                char_ct += len(word)
+                if char_ct > 200:
+                    break
+            words.append('…')  # elipsis character
+            summary = ' '.join(words)
+        return summary
+
+    def posted_time(self):
+        return format_datetime(self.posted, format='long')
+
 
 class JobPostingStatusChange(db.Model):
     __tablename__ = 'job_posting_status_changes'

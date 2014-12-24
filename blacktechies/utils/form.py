@@ -1,3 +1,4 @@
+from flask.ext import wtf
 from datetime import timedelta
 from blacktechies.utils.signer import time_signer
 from blacktechies.utils.string import random_string
@@ -32,3 +33,8 @@ class FormSigner(object):
 _form_signer = FormSigner()
 generate_ts = _form_signer.generate_ts
 validate_ts = _form_signer.validate_ts
+
+
+class Form(wtf.Form):
+    def current_timestamp(self):
+        return _form_signer.generate_ts()
