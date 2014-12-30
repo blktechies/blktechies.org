@@ -1,0 +1,17 @@
+{% extends "layouts/base.html" %}
+{% from 'helpers/_wtformhelpers.html' import render_field, render_hfield %}
+{% block title %}Create New Job Post{% endblock %}
+
+{% block main_content %}
+  <h3>Create a New Jobs Post</h3>
+  <div class="row">
+    <div class="col-xs-12">
+      <form class="form" method="POST" action="{{ url_for('jobs.new_jobs_post') }}">
+        {{ form.hidden_tag() }}
+        {{ render_hfield(form.title) }}
+        {{ render_hfield(form.body) }}
+        <button type="submit" class="btn btn-primary btn-lg">Create Post</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

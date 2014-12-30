@@ -1,0 +1,27 @@
+{% extends "messaging/base.html" %}
+
+{% block title %}
+  Subject: {{ conversation.subject|default('(none)', true) }}
+{% endblock %}
+
+{% block main_content %}
+  <h3>{{ conversation.subject}}</h3>
+  <ul class="list-unstyled">
+    {% for message in messages %}
+      <li>
+        <div class="panel panel-default">
+          <div class="panel-heading">From: {{ message.sender.username }}
+            <div class="pull-right">Sent: {{ message.timestamp }}</div>
+          </div>
+          <div class="panel-body">{{ message.body }}</div>
+        </div>
+
+      </li>
+    {% else %}
+      <li>No messages found. Maybe they were all deleted?</li>
+    {% endfor %}
+  </ul>
+  {% if form %}
+    {% include "messaging/_reply_form.html" %}
+  {% endif %}
+{% endblock %}

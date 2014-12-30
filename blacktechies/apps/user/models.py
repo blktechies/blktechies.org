@@ -147,12 +147,12 @@ class User(db.Model, UserMixin):
 
     @hybrid_property
     def password(self):
-        if re.match('^\$2a\$\d\d\$[a-zA-Z0-9\./]{53}$', self._password):
-            return self._password
+        # if re.match('^\$2a\$\d\d\$[a-zA-Z0-9\./]{53}$', self._password):
+        return self._password
 
     @password.setter
     def password(self, password):
-        self.validate_password(password)
+        self.validate_password(None, password)
         self._password = password
 
     def get_id(self):

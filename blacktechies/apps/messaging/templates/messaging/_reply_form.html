@@ -1,0 +1,9 @@
+{% from 'helpers/_wtformhelpers.html' import render_field %}
+
+<form method="POST"
+      action="{{ url_for('messaging.new_reply', conversation_id=conversation.id) }}">
+
+      {{ form.hidden_tag() }}
+      {{ render_field(form.body) }}
+      <button type="submit" class="btn btn-primary">Reply</button>
+</form>

@@ -4,7 +4,6 @@ import dotenv
 basedir = os.path.join(os.path.dirname(__file__), os.pardir)
 dotenv.load_dotenv(os.path.join(basedir, ".env"))
 
-
 class MailConfig(object):
     MAIL_USERNAME = os.getenv('BLACKTECHIES_MAIL_USER', '')
     MAIL_PASSWORD = os.getenv('BLACKTECHIES_MAIL_PASSWORD', '')
@@ -13,7 +12,6 @@ class MailConfig(object):
     MAIL_PORT = os.getenv('MAIL_PORT') or 465
     MAIL_USE_SSL = os.getenv('MAIL_USE_SSL') or True
     MAIL_USE_TLS = os.getenv('MAIL_USE_TLS') or True
-
 
 class FlaskWTFConfig(object):
     pass
@@ -42,7 +40,6 @@ class Config(FlaskUserConfig, FlaskLoginConfig, FlaskWTFConfig, MailConfig):
 
 class Development(Config):
     DEBUG = True
-
 
 class Production(Config):
     DEBUG = False
