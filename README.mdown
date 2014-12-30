@@ -4,9 +4,10 @@ Blktechies.org
 ### This project is under development and not yet ready for general release
 
 * To get this to run, you'll need some environment variables
-defined. Look in `blacktechies/config.py` for what you need. The app
-will throw exceptions (by design)  because it's using `os.environ[KEY]`
-rather than `os.getenv`.
+defined. Look in `blacktechies/config.py` for what you need, create the key
+in an `.env` file in the project root. Otherwise, the app will throw exceptions
+(by design) because it's using `os.environ[KEY]` rather than `os.getenv`.
+
 
 * You'll need to install the requirements.
         $ pip install -r requirements.txt
@@ -25,7 +26,8 @@ rather than `os.getenv`.
 
 Once all of the above have been satisfied, you can run
 
-    $ python3 run.py
+    $ python3 manage.py runserver [-d (for debugging)]
+
 
 To launch the development server on `127.0.0.1:5000`.
 
